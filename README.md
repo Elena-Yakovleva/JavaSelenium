@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/384y9559tckeb5gk?svg=true)](https://ci.appveyor.com/project/Elena-Yakovleva/javaselenium)
+
 ### Домашнее задание к занятию «2.1. Тестирование веб-интерфейсов»
 
  **Селекторы**
