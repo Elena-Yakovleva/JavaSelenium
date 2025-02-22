@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MobileBankCallBackFormApiTestV1 {
+public class MobileBankCallBackFormApiTestV1{
 
     //инициализация переменной объекта driver
     private WebDriver driver;
