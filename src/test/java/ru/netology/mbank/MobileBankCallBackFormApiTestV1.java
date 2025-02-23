@@ -35,7 +35,7 @@ public class MobileBankCallBackFormApiTestV1 {
         ChromeOptions options = new ChromeOptions(); //  набор параметров для драйвера
         options.addArguments("--disable-dev-shm-usage"); // отключает использование временного хранилища
         options.addArguments("--dno-sandbox"); // отключает песочницу безопасности
-        options.addArguments("--headless"); // запускает браузер Chrome в режиме без графического интерфейса
+        //options.addArguments("--headless"); // запускает браузер Chrome в режиме без графического интерфейса
         driver = new ChromeDriver(options); //сохраняем скаченный драйвер с нужными параметрами в переменной driver
         driver.get("http://localhost:9999");// запускаем страницу с помощью драйвера
     }
@@ -58,12 +58,11 @@ public class MobileBankCallBackFormApiTestV1 {
     public void shouldCreateCallbackRequest() {
 
         //Форма заявки
-        inputElements = driver.findElements(By.cssSelector("[class='input__control']")); //найти список элементов
-        inputElements.get(0).sendKeys("Петров Иван"); //ввести в поле фамилию и имя
-        inputElements.get(1).sendKeys("+71112223344"); //ввести номер телефона
+        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Петров Иван"); //ввести в поле фамилию и имя
+        driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+71112223344"); //ввести номер телефона
 
         driver.findElement(By.cssSelector("[data-test-id='agreement']")).click(); // подтвердить согласие на обработку перс.данных
-        driver.findElement(By.cssSelector("[class='button button_view_extra button_size_m button_theme_alfa-on-white']")).click(); //нажать на кнопку для отправки
+        driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
         result = driver.findElement(By.cssSelector("[data-test-id='order-success']"));//проверяем наличие информации о создании заявки на обратный звонок через появление инф.сообщения
 
@@ -75,10 +74,15 @@ public class MobileBankCallBackFormApiTestV1 {
     // Не заполнены Фамилия и Имя
     @Test
     public void shouldNotCreateCallbackRequestNotInputName() {
-        inputElements = driver.findElements(By.cssSelector("[class='input__sub']")); //  создаем коллекцию с тестами ошибок для полей ввода
 
-        driver.findElement(By.cssSelector("[class='button button_view_extra button_size_m button_theme_alfa-on-white']")).click(); // нажимаем на кнопку "Продолжить"
-        result = inputElements.get(0); // сохраняем в переменной result первый элемент коллекции
+        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys(""); //оставить поле для ввода имени не заполненным
+        driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+71112223344"); //ввести номер телефона
+
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click(); // подтвердить согласие на обработку перс.данных
+        driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
+
+        result = driver.findElement(By.cssSelector("[data-test-id='name'] span.input__sub")); // сохраняем сообщение об ошибке
+
         assertTrue(result.isDisplayed()); // проверяем, что сообщение отображается
         assertEquals("Поле обязательно для заполнения", result.getText().trim()); // проверяем текст сообщения
 
@@ -87,13 +91,14 @@ public class MobileBankCallBackFormApiTestV1 {
     // Имя заполнено на латинице
     @Test
     public void shouldNotCreateCallbackRequestWithLatinName() {
-        inputElements = driver.findElements(By.cssSelector("[class='input__control']")); // создаем коллекцию полей ввода
-        inputElements.get(0).sendKeys("Petrov Ivan"); // вводим в первое поле Фамилию и Имя на латинице
+        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Petrov Ivan"); // ввести имя и фамилию на латинице
+        driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+71112223344"); //ввести номер телефона
 
-        inputElements = driver.findElements(By.cssSelector("[class='input__sub']")); // создаем коллекцию элементов с текстами ошибок
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click(); // подтвердить согласие на обработку перс.данных
+        driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
-        driver.findElement(By.cssSelector("[class='button button_view_extra button_size_m button_theme_alfa-on-white']")).click(); // нажимаем на кнопку "Продолжить"
-        result = inputElements.get(0); // сохраняем в переменной текст первого элемента коллекции
+        result = driver.findElement(By.cssSelector("[data-test-id='name'] span.input__sub")); // сохраняем сообщение об ошибке
+
         assertTrue(result.isDisplayed()); // проверяем, что сообщение отображается
         assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", result.getText().trim()); // проверяем текст сообщения
     }
@@ -101,29 +106,30 @@ public class MobileBankCallBackFormApiTestV1 {
     // Не заполнен телефон
     @Test
     public void shouldNotCreateCallbackRequestNotPhoneNumber() {
-        inputElements = driver.findElements(By.cssSelector("[class='input__control']")); // создаем коллекцию полей ввода
-        inputElements.get(0).sendKeys("Петров Иван"); // вводим в первое поле корректные Фамилию и Имя
+        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Петров Иван"); // ввести имя и фамилию
+        driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys(""); // оставить поле для ввода телефона пустым
 
-        inputElements = driver.findElements(By.cssSelector("[class='input__sub']")); // создаем коллекцию с текстами ошибок
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click(); // подтвердить согласие на обработку перс.данных
+        driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
-        driver.findElement(By.cssSelector("[class='button button_view_extra button_size_m button_theme_alfa-on-white']")).click(); // нажимаем на кнопку "Продолжить"
-        result = inputElements.get(1);   // сохраняем в переменной текст второго элемента коллекции
+        result = driver.findElement(By.cssSelector("[data-test-id='phone'] span.input__sub")); // сохраняем сообщение об ошибке
+
         assertTrue(result.isDisplayed()); // проверяем, что сообщение отображается
         assertEquals("Поле обязательно для заполнения", result.getText().trim()); // проверяем текст сообщения
 
     }
 
-    // Номер телефона введен с ошибкой
+    // Номер телефона введен без плюса
     @Test
     public void shouldNotCreateCallbackRequestIncorrectPhoneNumber() {
-        inputElements = driver.findElements(By.cssSelector("[class='input__control']")); // создаем коллекцию полей ввода
-        inputElements.get(0).sendKeys("Петров Иван"); // вводим в первое поле корректные Фамилию и Имя
-        inputElements.get(1).sendKeys("799922211333"); // вводим номер телефона с ошибкой
+        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Петров Иван"); // ввести имя и фамилию
+        driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("71112223344"); // ввести номер телефона без плюса
 
-        inputElements = driver.findElements(By.cssSelector("[class='input__sub']")); // создаем коллекцию элементов с текстами ошибок
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")).click(); // подтвердить согласие на обработку перс.данных
+        driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
-        driver.findElement(By.cssSelector("[class='button button_view_extra button_size_m button_theme_alfa-on-white']")).click(); // нажимаем на кнопку "Продолжить"
-        result = inputElements.get(1);  // сохраняем в переменной текст второго элемента коллекции
+        result = driver.findElement(By.cssSelector("[data-test-id='phone'] span.input__sub")); // сохраняем сообщение об ошибке
+
         assertTrue(result.isDisplayed()); // проверяем, что сообщение отображается
         assertEquals("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.", result.getText().trim()); // проверяем текст сообщения
     }
@@ -131,11 +137,20 @@ public class MobileBankCallBackFormApiTestV1 {
     // Не стоит согласие на обработку персональных данных
     @Test
     public void shouldNotCreateCallbackRequestNoConsentProcessing() {
-        inputElements = driver.findElements(By.cssSelector("[class='input__control']")); // создаем коллекцию полей ввода
-        inputElements.get(0).sendKeys("Петров Иван"); // вводим в первое поле корректные Фамилию и Имя
-        inputElements.get(1).sendKeys("+71112223344"); // вводим номер телефона
+        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Петров Иван"); // ввести имя и фамилию
+        driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+71112223344"); // ввести номер телефона
+
+        driver.findElement(By.cssSelector("[data-test-id='agreement']")); //   согласие на обработку перс.данных не ставить
+        driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
         assertFalse(driver.findElement(By.cssSelector("[data-test-id='agreement']")).isSelected()); // проверяем отсутствие заполнения чек-бокса
+
+        //  проверяем изменение цвета сообщения при не проставленном чек-боксе
+        // получаем значения CSS-свойства color
+        String actualColor = driver.findElement(By.cssSelector("label.input_invalid")).getCssValue("color");
+        // ожидаемый результат можно посмотреть при нажатии на index.css:16 в блоке style для селектора .input_invalid
+        String expectedColor = "rgba(255, 92, 92, 1)";
+        assertEquals(expectedColor, actualColor);
     }
 
 }
