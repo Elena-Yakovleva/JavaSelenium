@@ -81,7 +81,7 @@ public class MobileBankCallBackFormApiTestV1 {
         driver.findElement(By.cssSelector("[data-test-id='agreement']")).click(); // подтвердить согласие на обработку перс.данных
         driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
-        result = driver.findElement(By.cssSelector("[data-test-id='name'] span.input__sub")); // сохраняем сообщение об ошибке
+        result = driver.findElement(By.cssSelector("[data-test-id='name'].input_invalid .input__sub")); // сохраняем сообщение об ошибке
 
         assertTrue(result.isDisplayed()); // проверяем, что сообщение отображается
         assertEquals("Поле обязательно для заполнения", result.getText().trim()); // проверяем текст сообщения
@@ -97,7 +97,7 @@ public class MobileBankCallBackFormApiTestV1 {
         driver.findElement(By.cssSelector("[data-test-id='agreement']")).click(); // подтвердить согласие на обработку перс.данных
         driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
-        result = driver.findElement(By.cssSelector("[data-test-id='name'] span.input__sub")); // сохраняем сообщение об ошибке
+        result = driver.findElement(By.cssSelector("[data-test-id='name'].input_invalid .input__sub")); // сохраняем сообщение об ошибке
 
         assertTrue(result.isDisplayed()); // проверяем, что сообщение отображается
         assertEquals("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.", result.getText().trim()); // проверяем текст сообщения
@@ -112,7 +112,7 @@ public class MobileBankCallBackFormApiTestV1 {
         driver.findElement(By.cssSelector("[data-test-id='agreement']")).click(); // подтвердить согласие на обработку перс.данных
         driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
-        result = driver.findElement(By.cssSelector("[data-test-id='phone'] span.input__sub")); // сохраняем сообщение об ошибке
+        result = driver.findElement(By.cssSelector("[data-test-id='phone'].input_invalid .input__sub")); // сохраняем сообщение об ошибке
 
         assertTrue(result.isDisplayed()); // проверяем, что сообщение отображается
         assertEquals("Поле обязательно для заполнения", result.getText().trim()); // проверяем текст сообщения
@@ -128,13 +128,13 @@ public class MobileBankCallBackFormApiTestV1 {
         driver.findElement(By.cssSelector("[data-test-id='agreement']")).click(); // подтвердить согласие на обработку перс.данных
         driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
-        result = driver.findElement(By.cssSelector("[data-test-id='phone'] span.input__sub")); // сохраняем сообщение об ошибке
+        result = driver.findElement(By.cssSelector("[data-test-id='phone'].input_invalid .input__sub")); // сохраняем сообщение об ошибке
 
         assertTrue(result.isDisplayed()); // проверяем, что сообщение отображается
         assertEquals("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.", result.getText().trim()); // проверяем текст сообщения
     }
 
-    // Не стоит согласие на обработку персональных данных
+    // Нет согласия на обработку персональных данных
     @Test
     public void shouldNotCreateCallbackRequestNoConsentProcessing() {
         driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Петров Иван"); // ввести имя и фамилию
@@ -143,14 +143,14 @@ public class MobileBankCallBackFormApiTestV1 {
         driver.findElement(By.cssSelector("[data-test-id='agreement']")); //   согласие на обработку перс.данных не ставить
         driver.findElement(By.cssSelector("[class='button__content']")).click(); //нажать на кнопку для отправки
 
-        assertFalse(driver.findElement(By.cssSelector("[data-test-id='agreement']")).isSelected()); // проверяем отсутствие заполнения чек-бокса
+        assertFalse(driver.findElement(By.cssSelector("[data-test-id='agreement'].input_invalid")).isSelected()); // проверяем отсутствие заполнения чек-бокса. 2. вариант привязки к блоку ("label.input_invalid")).isSelected())
+        assertTrue(driver.findElement(By.cssSelector("[data-test-id='agreement'].input_invalid")).isDisplayed());
 
-        //  проверяем изменение цвета сообщения при не проставленном чек-боксе
-        // получаем значения CSS-свойства color
-        String actualColor = driver.findElement(By.cssSelector("label.input_invalid")).getCssValue("color");
-        // ожидаемый результат можно посмотреть при нажатии на index.css:16 в блоке style для селектора .input_invalid
-        String expectedColor = "rgba(255, 92, 92, 1)";
-        assertEquals(expectedColor, actualColor);
     }
+        // Проверка соответствия цвета сообщения ожидаемому результату, возможна через значения CSS-свойства "color"
+        //String actualColor = driver.findElement(By.cssSelector("label.input_invalid")).getCssValue("color");
+        // String expectedColor = "rgba(255, 92, 92, 1)"; // ожидаемый результат можно посмотреть при нажатии на index.css:16 в блоке style для селектора .input_invalid
+        //assertEquals(expectedColor, actualColor);
+
 
 }
