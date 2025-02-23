@@ -35,7 +35,7 @@ public class MobileBankCallBackFormApiTestV1 {
         ChromeOptions options = new ChromeOptions(); //  набор параметров для драйвера
         options.addArguments("--disable-dev-shm-usage"); // отключает использование временного хранилища
         options.addArguments("--dno-sandbox"); // отключает песочницу безопасности
-        //options.addArguments("--headless"); // запускает браузер Chrome в режиме без графического интерфейса
+        options.addArguments("--headless"); // запускает браузер Chrome в режиме без графического интерфейса
         driver = new ChromeDriver(options); //сохраняем скаченный драйвер с нужными параметрами в переменной driver
         driver.get("http://localhost:9999");// запускаем страницу с помощью драйвера
     }
